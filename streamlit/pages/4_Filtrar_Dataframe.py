@@ -8,16 +8,8 @@ from pandas.api.types import (
 )
 
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Adds a UI on top of a dataframe to let viewers filter columns.
 
-    Args:
-        df (pd.DataFrame): Original dataframe
-
-    Returns:
-        pd.DataFrame: Filtered dataframe
-    """
-    modify = st.checkbox("Add filters")
+    modify = st.checkbox("Adicione os filtros desejados")
 
     if not modify:
         return df
@@ -38,21 +30,21 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     modification_container = st.container()
 
     with modification_container:
-        to_filter_columns = st.multiselect("Filter dataframe on", df.columns)
+        to_filter_columns = st.multiselect("Filtrar dataframe em", df.columns)
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
             left.write("↳")
             # Treat columns with < 10 unique values as categorical
             if isinstance(df[column].dtype, pd.api.types.CategoricalDtype) or df[column].nunique() < 10:
                 user_cat_input = right.multiselect(
-                    f"Values for {column}",
+                    f"Valores para {column}",
                     df[column].unique(),
                 )
                 if user_cat_input:
                     df = df[df[column].isin(user_cat_input)]
             elif is_numeric_dtype(df[column]):
                 user_num_input = right.number_input(
-                    f"Value for {column}",
+                    f"Valor para {column}",
                     min_value=float(df[column].min()),
                     max_value=float(df[column].max()),
                     value=None,
@@ -61,7 +53,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                     df = df[df[column] == user_num_input]
             elif is_datetime64_any_dtype(df[column]):
                 user_date_input = right.date_input(
-                    f"Values for {column}",
+                    f"Valor para {column}",
                     value=None,
                 )
                 if user_date_input:
@@ -69,7 +61,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                     df = df.loc[df[column].between(start_date, end_date)]
             else:
                 user_text_input = right.text_input(
-                    f"Substring or regex in {column}",
+                    f"Substring ou regex em {column}",
                 )
                 if user_text_input:
                     df = df[df[column].str.contains(user_text_input)]
@@ -77,12 +69,10 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-st.title("Auto Filter Dataframes in Streamlit")
+st.title("Filtragem automática para visualização simples")
 
 st.write(
-    """This app accommodates the blog [here](https://blog.streamlit.io/auto-generate-a-dataframe-filtering-ui-in-streamlit-with-filter_dataframe/)
-    and walks you through one example of how the Streamlit
-    Data Science Team builds add-on functions to Streamlit.
+    """Nessa página estamos inserindo uma copia do nosso Dataframe para filtragem e visualização simples em tabela
     """
 )
 
