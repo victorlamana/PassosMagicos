@@ -7,7 +7,7 @@ import base64
 st.title("Embedded Notebook")
 
 # Path to your HTML file
-html_file_path = 'E:\git\PERSONAL\POSTECH\OTHER\streamlit\pages\datathon_prep.html'
+html_file_path = "../streamlit/dataset/datathon_prep.html"
 
 # Read the HTML file with a specified encoding
 try:

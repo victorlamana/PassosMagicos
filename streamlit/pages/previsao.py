@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv('dados_finais.csv')
+df = pd.read_csv('../streamlit/dataset/dados_finais.csv')
 
 def obter_dados_e_previsao(id_aluno):
     df_aluno = df[df['ID_ALUNO'] == id_aluno].sort_values(by='ANO_PESQUISA')
