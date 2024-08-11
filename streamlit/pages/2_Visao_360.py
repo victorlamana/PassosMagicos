@@ -42,24 +42,27 @@ def gera_yoy_df(df):
 # Função para carregar as imagens das pedras
 def carrega_imagem_pedra(nome_pedra, tamanho):
     try:
-        imagem = Image.open(f'dataset\images\{nome_pedra}.png')
+        imagem = Image.open(f'images/{nome_pedra}.png')
         imagem = imagem.resize((tamanho, tamanho))
         return imagem
     except FileNotFoundError:
         st.write(f"Imagem para a pedra {nome_pedra} não encontrada.")
         return None
 
-# Função para exibir as pedras
+# Função para exibir as pedras uma ao lado da outra
 def exibe_pedras_por_ano(dfaluno):
     pedras_por_ano = dfaluno[['ANO_PESQUISA', 'PEDRA']].drop_duplicates()
     pedras_por_ano = pedras_por_ano.sort_values(by='ANO_PESQUISA', ascending=False)
 
     if not pedras_por_ano.empty:
+        max_size = 200  # Tamanho da imagem da pedra mais recente
         for idx, row in enumerate(pedras_por_ano.itertuples()):
-            tamanho = 200 // (idx + 1)  # Reduz o tamanho da imagem para cada ano anterior
+            tamanho = max_size // (2 ** idx)  # Reduz o tamanho da imagem para cada ano anterior
             imagem_pedra = carrega_imagem_pedra(row.PEDRA, tamanho)
             if imagem_pedra:
-                st.image(imagem_pedra, caption=f"Pedra: {row.PEDRA} ({row.ANO_PESQUISA})")
+                col1, col2 = st.columns([1, 1])  # Cria duas colunas de igual largura
+                with col1 if idx % 2 == 0 else col2:
+                    st.image(imagem_pedra, caption=f"Pedra: {row.PEDRA} ({row.ANO_PESQUISA})")
 
 # Carrega os dados do CSV
 df = pd.read_csv("dataset/dados_finais.csv")
