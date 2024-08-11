@@ -7,7 +7,7 @@ import base64
 st.title("Preparacao do Dataframe")
 
 # Path to your HTML file
-html_file_path = "../streamlit/dataset/datathon_prep.html"
+html_file_path = "dataset\datathon_prep.html"
 
 # Read the HTML file with a specified encoding
 try:

@@ -39,7 +39,7 @@ def gera_yoy_df(df):
     return pd.DataFrame(data)
 
 # Carrega os dados do CSV
-df = pd.read_csv('E:\git\PERSONAL\PosTech-Datathon\streamlit\dataset\dados_finais.csv')
+df = pd.read_csv("dataset\dados_finais.csv")
 
 # Configuração da página no Streamlit
 st.title('Análise do INDE por Aluno')

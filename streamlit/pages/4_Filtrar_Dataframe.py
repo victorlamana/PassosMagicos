@@ -76,5 +76,5 @@ st.write(
     """
 )
 
-df = pd.read_csv("../streamlit/dataset/dados_finais.csv")
+df = pd.read_csv("dataset\dados_finais.csv")
 st.dataframe(filter_dataframe(df))
