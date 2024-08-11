@@ -42,7 +42,7 @@ def gera_yoy_df(df):
 # Função para carregar as imagens das pedras
 def carrega_imagem_pedra(nome_pedra, tamanho):
     try:
-        imagem = Image.open(f'images/{nome_pedra}.png')
+        imagem = Image.open(f'dataset\images\{nome_pedra}.png')
         imagem = imagem.resize((tamanho, tamanho))
         return imagem
     except FileNotFoundError:
