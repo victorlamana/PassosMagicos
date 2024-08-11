@@ -4,7 +4,14 @@ import streamlit.components.v1 as components
 import base64
 
 
-st.title("Preparacao do Dataframe")
+st.title("Histórico de Transformação do DataFrame")
+
+st.write("""
+Nesta página, apresentamos todo o processo de transformação do DataFrame, desde a sua versão inicial até a forma final 
+que é utilizada nos relatórios exibidos nesta aplicação. Aqui, você poderá acompanhar cada etapa de manipulação, limpeza, 
+e agregação de dados, detalhando como as informações foram refinadas para fornecer as análises mais precisas e relevantes 
+possíveis.
+""")
 
 # Path to your HTML file
 html_file_path = "dataset\datathon_prep.html"

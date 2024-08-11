@@ -42,7 +42,7 @@ def gera_yoy_df(df):
 df = pd.read_csv("dataset\dados_finais.csv")
 
 # Configuração da página no Streamlit
-st.title('Análise do INDE por Aluno')
+st.title('Visao 360')
 
 # Solicitação do ID do aluno
 id_aluno = st.text_input('Insira o ID do aluno:', '')
