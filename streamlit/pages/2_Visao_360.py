@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import matplotlib.pyplot as plt
 from PIL import Image
 
 # Função para dividir o DataFrame por ano de pesquisa
@@ -42,7 +43,7 @@ def gera_yoy_df(df):
 # Função para carregar as imagens das pedras
 def carrega_imagem_pedra(nome_pedra, tamanho):
     try:
-        imagem = Image.open(f'dataset\images\{nome_pedra}.png')
+        imagem = Image.open(f'dataset/images/{nome_pedra}.png')
         imagem = imagem.resize((tamanho, tamanho))
         return imagem
     except FileNotFoundError:
@@ -55,59 +56,86 @@ def exibe_pedras_por_ano(dfaluno):
     pedras_por_ano = pedras_por_ano.sort_values(by='ANO_PESQUISA', ascending=False)
 
     if not pedras_por_ano.empty:
-        # Configura o tamanho máximo da imagem
         max_size = 200
-        # Lista para armazenar as colunas para cada pedra
         colunas = st.columns(len(pedras_por_ano))
         for idx, row in enumerate(pedras_por_ano.itertuples()):
-            tamanho = max_size // (2 ** idx)  # Reduz o tamanho da imagem para cada ano anterior
+            tamanho = max_size // (2 ** idx)
             imagem_pedra = carrega_imagem_pedra(row.PEDRA, tamanho)
             if imagem_pedra:
                 with colunas[idx]:
                     st.image(imagem_pedra, caption=f"Pedra: {row.PEDRA} ({row.ANO_PESQUISA})")
 
+
+def obter_dados_e_previsao(df, id_aluno):
+    df_aluno = df[df['ID_ALUNO'] == id_aluno].sort_values(by='ANO_PESQUISA')
+    if df_aluno.empty:
+        return None, None
+
+    serie_temporal = df_aluno['INDE'].values
+    anos = df_aluno['ANO_PESQUISA'].values
+    return serie_temporal, anos
+
+def plotar_grafico_inde(serie_temporal, anos):
+    plt.figure(figsize=(10, 5))
+    plt.plot(anos, serie_temporal, marker='o', linestyle='-', label='INDE Real', color='b')
+    plt.xlabel('Ano')
+    plt.ylabel('INDE')
+    plt.title('Evolução do INDE ao longo dos anos')
+    plt.legend()
+    st.pyplot(plt)
+
+###################################################################################################################
+
 # Carrega os dados do CSV
 df = pd.read_csv("dataset/dados_finais.csv")
 
 # Configuração da página no Streamlit
+st.set_page_config(page_title="Visão 360 Aluno", layout="wide", initial_sidebar_state="expanded")
+
 st.title('Visão 360 do Aluno')
+st.markdown("---")
 
 # Solicitação do ID do aluno
 id_aluno = st.text_input('Insira o ID do aluno:', '')
 
 if id_aluno:
     try:
-        # Converte o ID do aluno para inteiro
         id_aluno_int = int(id_aluno)
-        
-        # Filtra os dados do aluno
         dfaluno = df[df['ID_ALUNO'] == id_aluno_int]
 
         if dfaluno.empty:
-            st.write("ID do aluno não encontrado.")
+            st.warning("ID do aluno não encontrado.")
         else:
-            # Exibe as pedras que o aluno já teve
             st.subheader("Pedras por Ano")
             exibe_pedras_por_ano(dfaluno)
 
-            # Gera os DataFrames para os gráficos
             dfs_por_ano = split_df_por_ano(dfaluno)
             df_yoy = gera_yoy_df(dfaluno)
 
-            # Gera e exibe o primeiro gráfico
             for ano, df_ano in dfs_por_ano.items():
-                st.subheader(f'Gráfico Polar para o Ano {ano}')
-                fig = px.line_polar(df_ano, r="NOTA", theta="INDICE", color="TIPO",
-                                    line_close=True, color_discrete_sequence=px.colors.sequential.Plasma_r,
-                                    template="plotly_dark")
+                st.subheader(f'Análise de KPIs para o ano {ano}')
+                fig = px.line_polar(
+                    df_ano, 
+                    r="NOTA", 
+                    theta="INDICE", 
+                    color="TIPO",
+                    line_close=True, 
+                    color_discrete_sequence=px.colors.qualitative.Plotly,
+                    template="plotly_dark"
+                )
                 st.plotly_chart(fig)
 
-            # Gera e exibe o segundo gráfico
-            st.subheader('Gráfico Polar Year-over-Year (YoY)')
-            fig = px.line_polar(df_yoy, r="NOTA", theta="INDICE", color="ANO_PESQUISA",
-                                line_close=True, color_discrete_sequence=px.colors.sequential.Plasma_r,
-                                template="plotly_dark")
+            st.subheader('Overview anual')
+            fig = px.line_polar(
+                df_yoy, 
+                r="NOTA", 
+                theta="INDICE", 
+                color="ANO_PESQUISA",
+                line_close=True, 
+                color_discrete_sequence=px.colors.qualitative.Plotly,
+                template="plotly_dark"
+            )
             st.plotly_chart(fig)
 
     except ValueError:
-        st.write("Por favor, insira um ID válido.")
+        st.error("Por favor, insira um ID válido.")

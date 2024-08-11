@@ -2,45 +2,44 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv("dataset\dados_finais.csv")
+# Carrega os dados do CSV
+df = pd.read_csv("dataset/dados_finais.csv")
 
-def obter_dados_e_previsao(df, id_aluno):
+# Função para obter e plotar dados do aluno com diferença percentual
+def exibir_grafico_inde(df, id_aluno):
     df_aluno = df[df['ID_ALUNO'] == id_aluno].sort_values(by='ANO_PESQUISA')
-    if df_aluno.empty:
-        return None, None
+    
+    if not df_aluno.empty:
+        anos = df_aluno['ANO_PESQUISA'].values
+        inde = df_aluno['INDE'].values
+        
+        plt.figure(figsize=(10, 5))
+        plt.plot(anos, inde, marker='o', linestyle='-', color='b', label='INDE Real')
+        plt.xticks(anos)
+        plt.xlabel('Ano')
+        plt.ylabel('INDE')
+        plt.title(f'Evolução do INDE para o aluno {id_aluno}')
+        plt.legend()
 
-    serie_temporal = df_aluno['INDE'].values
-    anos = df_aluno['ANO_PESQUISA'].values
-    return serie_temporal, anos
+        # Cálculo da diferença percentual e anotação no gráfico
+        for i in range(1, len(anos)):
+            diff_percent = ((inde[i] - inde[i-1]) / inde[i-1]) * 100
+            diff_text = f"Aumentou {diff_percent:.2f}%" if diff_percent > 0 else f"Diminuiu {diff_percent:.2f}%"
+            plt.text(anos[i], inde[i], diff_text, fontsize=9, verticalalignment='bottom', horizontalalignment='right')
 
-def plotar_grafico_inde(serie_temporal, anos):
-    plt.figure(figsize=(10, 5))
-    plt.plot(anos, serie_temporal, marker='o', linestyle='-', label='INDE Real', color='b')
-    plt.xlabel('Ano')
-    plt.ylabel('INDE')
-    plt.title('Evolução do INDE ao longo dos anos')
-    plt.legend()
-    st.pyplot(plt)
+        st.pyplot(plt)
+    else:
+        st.write('ID do aluno não encontrado.')
 
+# Configuração da página no Streamlit
 st.title('Previsão do INDE para Alunos')
 
 # Solicita o ID do aluno ao usuário
 id_aluno = st.text_input('Insira o ID do aluno:', '')
 
-# Verifica se o usuário inseriu algum valor no campo de texto
+# Verifica se o usuário inseriu algum valor no campo de texto e tenta exibir o gráfico
 if id_aluno:
     try:
-        # Tenta converter o ID do aluno para inteiro
-        id_aluno_int = int(id_aluno)
-
-        # Obtém os dados do aluno
-        serie_temporal, anos = obter_dados_e_previsao(df, id_aluno_int)
-
-        # Se os dados foram encontrados, exibe o gráfico
-        if serie_temporal is not None:
-            st.subheader(f'Evolução do INDE para o aluno {id_aluno_int}:')
-            plotar_grafico_inde(serie_temporal, anos)
-        else:
-            st.write('ID do aluno não encontrado.')
+        exibir_grafico_inde(df, int(id_aluno))
     except ValueError:
         st.write('Por favor, insira um ID válido.')
