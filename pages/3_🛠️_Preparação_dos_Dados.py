@@ -2,6 +2,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 import base64
+import PIL.Image as Image
 
 st.set_page_config(
     page_title="Preparação dos Dados",
@@ -9,6 +10,11 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     page_icon="🛠️"
 )
+with open("./css/style.css") as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+image =  Image.open("./img/passos-magicos.png")
+st.image(image)
+
 st.title("🛠️ Preparação dos Dados")
 st.markdown("---")
 

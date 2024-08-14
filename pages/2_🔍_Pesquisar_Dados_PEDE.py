@@ -1,5 +1,7 @@
 import pandas as pd
 import streamlit as st
+import PIL.Image as Image
+
 from pandas.api.types import (
     is_categorical_dtype,
     is_datetime64_any_dtype,
@@ -13,6 +15,10 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     page_icon="🔍"
 )
+with open("./css/style.css") as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+image =  Image.open("./img/passos-magicos.png")
+st.image(image)
 
 st.title("🔍 Pesquisa Dados da PEDE (2020, 2021 e 2022)")
 st.markdown("---")

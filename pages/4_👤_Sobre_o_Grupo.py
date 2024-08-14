@@ -1,4 +1,5 @@
 import streamlit as st
+import PIL.Image as Image
 
 st.set_page_config(
     page_title="Sobre o Grupo",
@@ -6,6 +7,10 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     page_icon="👥"
 )
+with open("./css/style.css") as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+image =  Image.open("./img/passos-magicos.png")
+st.image(image)
 
 st.title("👤 Sobre o Grupo")
 st.markdown("---")

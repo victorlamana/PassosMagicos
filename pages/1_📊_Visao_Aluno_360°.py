@@ -11,6 +11,11 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     page_icon="📊"
 )
+with open("./css/style.css") as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+image =  Image.open("./img/passos-magicos.png")
+st.image(image)
 
 st.title('📊 Visão Aluno 360°')
 st.markdown("---")
@@ -59,7 +64,7 @@ def gera_df_comparativo_anos(df):
 @st.cache_data
 def carrega_imagem_pedra(nome_pedra):
     try:
-        imagem = Image.open(f'dataset/images/{nome_pedra}.png')
+        imagem = Image.open(f'img/{nome_pedra}.png')
         return imagem
     except FileNotFoundError:
         st.write(f"Imagem para a pedra {nome_pedra} não encontrada.")
@@ -68,17 +73,39 @@ def carrega_imagem_pedra(nome_pedra):
 # Função para exibir as pedras em linha
 def exibe_pedras_por_ano(df):
     pedras_por_ano = df[['ANO_PESQUISA', 'PEDRA']].drop_duplicates()
-    pedras_por_ano = pedras_por_ano.sort_values(by='ANO_PESQUISA', ascending=False)
+    pedras_por_ano = pedras_por_ano.sort_values(by='ANO_PESQUISA', ascending=True)
 
-    if not pedras_por_ano.empty:
-        max_size = 200
-        colunas = st.columns(len(pedras_por_ano))
-        for idx, row in enumerate(pedras_por_ano.itertuples()):
+    pedra2020 = pedras_por_ano[pedras_por_ano['ANO_PESQUISA'] == 2020].PEDRA
+    pedra2021 = pedras_por_ano[pedras_por_ano['ANO_PESQUISA'] == 2021].PEDRA
+    pedra2022 = pedras_por_ano[pedras_por_ano['ANO_PESQUISA'] == 2022].PEDRA
 
-            imagem_pedra = carrega_imagem_pedra(row.PEDRA)
-            if imagem_pedra:
-                with colunas[idx]:
-                    st.image(imagem_pedra, caption=f"Pedra: {row.PEDRA} ({row.ANO_PESQUISA})")
+    col2020, col2021, col2022 = st.columns(3)
+
+    with col2020:
+        st.header("2020")
+        if not pedra2020.empty:
+            imagem_pedra2020 = carrega_imagem_pedra(pedra2020.iloc[0])
+            st.image(imagem_pedra2020, caption=f"Pedra: {pedra2020.iloc[0]} (2020)")
+    with col2021:
+        st.header("2021")
+        if not pedra2021.empty:
+            imagem_pedra2021 = carrega_imagem_pedra(pedra2021.iloc[0])
+            st.image(imagem_pedra2021, caption=f"Pedra: {pedra2021.iloc[0]} (2021)")
+    with col2022:
+        st.header("2022")
+        if not pedra2022.empty:
+            imagem_pedra2022 = carrega_imagem_pedra(pedra2022.iloc[0])
+            st.image(imagem_pedra2022, caption=f"Pedra: {pedra2022.iloc[0]} (2022)")
+
+    # if not pedras_por_ano.empty:
+    #     max_size = 200
+    #     colunas = st.columns(len(pedras_por_ano))
+    #     for idx, row in enumerate(pedras_por_ano.itertuples()):
+    #
+    #         imagem_pedra = carrega_imagem_pedra(row.PEDRA)
+    #         if imagem_pedra:
+    #             with colunas[idx]:
+    #                 st.image(imagem_pedra, caption=f"Pedra: {row.PEDRA} ({row.ANO_PESQUISA})")
 
 
 def exibir_grafico_inde(df):
@@ -87,7 +114,7 @@ def exibir_grafico_inde(df):
         inde = df['INDE'].values
 
         plt.figure(figsize=(10, 5))
-        plt.plot(anos, inde, marker='o', linestyle='-', color='b', label='INDE Real')
+        plt.plot(anos, inde, marker='o', linestyle='-', color='b', label='INDE')
         plt.xticks(anos)
         plt.xlabel('Ano')
         plt.ylabel('INDE')
@@ -106,18 +133,16 @@ def exibir_grafico_inde(df):
 
 def gera_grafico_medias(df):
     df_medias = gera_df_comparativo_aluno_medias(df)
-    fig = make_subplots(rows=1, cols=3, specs=[[{'type': 'polar'}]*3],
-                        subplot_titles=('2020', '2021', '2022'), column_titles=('2020', '2021', '2022'),
-                        x_title="Evolução do Aluno por Ano")
+    fig = make_subplots(rows=1, cols=3, specs=[[{'type': 'polar'}]*3],x_title="Evolução do Aluno por Ano", subplot_titles=[2020, 2021, 2022])
     for index, key in enumerate(df_medias):
-        fig1 = px.line_polar(df_medias[key], r="Nota", theta="Indice", color="Legenda", line_close=True, title="2020", markers=True, range_r=[0,10], start_angle=0, direction='counterclockwise')
-        fig.add_traces(list(fig1.select_traces()),1,index+1)
+        fig1 = px.line_polar(df_medias[key], r="Nota", theta="Indice", color="Legenda", title=key, line_close=True, markers=True, range_r=[0,10], start_angle=0, direction='counterclockwise')
+        fig.add_traces(list(fig1.select_traces()),1,key-2019)
 
-        labels_to_show_in_legend = ["Notas do Aluno (2020)", "Médias da Fase (2020)", "Médias da Turma (2020)"]
-
-        for trace in fig['data']:
-            if (not trace['name'] in labels_to_show_in_legend):
+        labels_to_show_in_legend = ["Notas do Aluno", "Médias da Fase", "Médias da Turma"]
+        for trace in fig.data[3:]:
+            if (trace['name'] in labels_to_show_in_legend):
                 trace['showlegend'] = False
+                # print(trace)
     # fig.update_layout(
     #     showlegend=False
     # )
