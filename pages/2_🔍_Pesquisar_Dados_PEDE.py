@@ -7,6 +7,21 @@ from pandas.api.types import (
     is_object_dtype,
 )
 
+st.set_page_config(
+    page_title="Pesquisa Dados PEDE",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    page_icon="🔍"
+)
+
+st.title("🔍 Pesquisa Dados da PEDE (2020, 2021 e 2022)")
+st.markdown("---")
+
+@st.cache_data
+def load_data(url):
+    df = pd.read_csv(url)
+    return df
+
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
     modify = st.checkbox("Adicione os filtros desejados")
@@ -68,13 +83,11 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-
-st.title("Filtragem automática para visualização simples")
-
 st.write(
-    """Nessa página estamos inserindo uma copia do nosso Dataframe para filtragem e visualização simples em tabela
+    """Nessa página estamos inserindo uma cópia do nosso dataset para pesquisa e visualização simples em tabela
     """
 )
 
-df = pd.read_csv("dataset\dados_finais.csv")
+df = load_data("dataset/dados_finais.csv")
+
 st.dataframe(filter_dataframe(df))

@@ -1,9 +1,16 @@
 import streamlit as st
 
+st.set_page_config(
+    page_title="Sobre o Projeto",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    page_icon="🏠"
+)
 
-st.title("DashAPP: Visão 360° do Aluno")
+st.title("🏠 Sobre o Projeto")
+st.markdown("---")
 
-st.subheader("Por que esse dashboard?")
+st.subheader("Qual foi a idéia por trás do projeto?")
 
 st.write("""
 Nosso objetivo com este dashboard é criar uma visão abrangente e personalizada para cada aluno da Passos Mágicos. 

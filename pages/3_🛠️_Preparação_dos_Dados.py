@@ -3,8 +3,14 @@ import streamlit as st
 import streamlit.components.v1 as components
 import base64
 
-
-st.title("Histórico de Transformação do DataFrame")
+st.set_page_config(
+    page_title="Preparação dos Dados",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    page_icon="🛠️"
+)
+st.title("🛠️ Preparação dos Dados")
+st.markdown("---")
 
 st.write("""
 Nesta página, apresentamos todo o processo de transformação do DataFrame, desde a sua versão inicial até a forma final 
@@ -14,7 +20,7 @@ possíveis.
 """)
 
 # Path to your HTML file
-html_file_path = "dataset\datathon_prep.html"
+html_file_path = "dataset\DATAPREP.html"
 
 # Read the HTML file with a specified encoding
 try:

@@ -1,6 +1,14 @@
 import streamlit as st
 
-st.title("Conheça os Integrantes do Grupo")
+st.set_page_config(
+    page_title="Sobre o Grupo",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    page_icon="👥"
+)
+
+st.title("👤 Sobre o Grupo")
+st.markdown("---")
 
 st.subheader("Gustavo França Severino - Data Engineer")
 st.write("""
