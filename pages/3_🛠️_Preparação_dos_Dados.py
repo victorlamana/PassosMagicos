@@ -15,6 +15,10 @@ with open("./css/style.css") as f:
 image =  Image.open("./img/passos-magicos.png")
 st.image(image)
 
+logo =  Image.open("./img/postech-logo-white.png")
+logo2 =  Image.open("./img/postech-logo-white2.png")
+st.logo(logo2, link=None, icon_image=logo )
+
 st.title("🛠️ Preparação dos Dados")
 st.markdown("---")
 
