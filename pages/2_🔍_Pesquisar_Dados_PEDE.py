@@ -15,14 +15,16 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     page_icon="🔍"
 )
+
 with open("./css/style.css") as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-image =  Image.open("./img/passos-magicos.png")
+
+image = Image.open("./img/passos-magicos.png")
 st.image(image)
 
-logo =  Image.open("./img/postech-logo-white.png")
-logo2 =  Image.open("./img/postech-logo-white2.png")
-st.logo(logo2, link=None, icon_image=logo )
+logo = Image.open("./img/postech-logo-white.png")
+logo2 = Image.open("./img/postech-logo-white2.png")
+st.logo(logo2, link=None, icon_image=logo)
 
 st.title("🔍 Pesquisa Dados da PEDE (2020, 2021 e 2022)")
 st.markdown("---")
@@ -30,6 +32,11 @@ st.markdown("---")
 @st.cache_data
 def load_data(url):
     df = pd.read_csv(url)
+
+    # Convertendo a coluna ID do aluno para inteiro
+    if 'ID_ALUNO' in df.columns:
+        df['ID_ALUNO'] = df['ID_ALUNO'].astype(int)
+
     return df
 
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
@@ -41,7 +48,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.copy()
 
-    # Try to convert datetimes into a standard format (datetime, no timezone)
+    # Tenta converter datetimes para um formato padrão (datetime, sem timezone)
     for col in df.columns:
         if is_object_dtype(df[col]):
             try:
@@ -59,8 +66,17 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
             left.write("↳")
-            # Treat columns with < 10 unique values as categorical
-            if isinstance(df[column].dtype, pd.api.types.CategoricalDtype) or df[column].nunique() < 10:
+            # Tratando a coluna ID_ALUNO como inteiro
+            if column == "ID_ALUNO":
+                user_num_input = right.number_input(
+                    f"Valor para {column}",
+                    min_value=int(df[column].min()),
+                    max_value=int(df[column].max()),
+                    value=None,
+                )
+                if user_num_input is not None:
+                    df = df[df[column] == user_num_input]
+            elif isinstance(df[column].dtype, pd.api.types.CategoricalDtype) or df[column].nunique() < 10:
                 user_cat_input = right.multiselect(
                     f"Valores para {column}",
                     df[column].unique(),
@@ -92,6 +108,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                     df = df[df[column].str.contains(user_text_input)]
 
     return df
+
 
 st.write(
     """Nessa página estamos inserindo uma cópia do nosso dataset para pesquisa e visualização simples em tabela

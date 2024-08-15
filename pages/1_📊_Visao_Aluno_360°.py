@@ -112,12 +112,13 @@ def exibe_pedras_por_ano(df):
     #                 st.image(imagem_pedra, caption=f"Pedra: {row.PEDRA} ({row.ANO_PESQUISA})")
 
 
-def exibir_grafico_inde(df):
+def exibir_grafico_inde(df, id_aluno):
     if not df.empty:
         anos = df['ANO_PESQUISA'].values
         inde = df['INDE'].values
+        ponto_virada = df['PONTO_VIRADA'].values  # Supondo que a coluna 'PONTO_VIRADA' exista no DataFrame
 
-        plt.figure(figsize=(10, 5))
+        plt.figure(figsize=(5, 4))
         plt.plot(anos, inde, marker='o', linestyle='-', color='b', label='INDE')
         plt.xticks(anos)
         plt.xlabel('Ano')
@@ -131,41 +132,69 @@ def exibir_grafico_inde(df):
             diff_text = f"Aumentou {diff_percent:.2f}%" if diff_percent > 0 else f"Diminuiu {diff_percent:.2f}%"
             plt.text(anos[i], inde[i], diff_text, fontsize=9, verticalalignment='bottom', horizontalalignment='right')
 
+        # Adiciona uma anotação "Ponto de Virada" nos pontos onde PONTO_VIRADA é "Sim"
+        for i, ponto in enumerate(ponto_virada):
+            if ponto == "Sim":
+                plt.annotate('Ponto de Virada', 
+                             xy=(anos[i], inde[i]), 
+                             xytext=(anos[i] + 0.2, inde[i] + 0.2),
+                             arrowprops=dict(facecolor='red', shrink=0.05),
+                             fontsize=10, color='red')
+
         st.pyplot(plt)
     else:
         st.write('ID do aluno não encontrado.')
 
+
 def gera_grafico_medias(df):
     df_medias = gera_df_comparativo_aluno_medias(df)
-    fig = make_subplots(rows=1, cols=3, specs=[[{'type': 'polar'}]*3],x_title="Evolução do Aluno por Ano", subplot_titles=[2020, 2021, 2022])
-    for index, key in enumerate(df_medias):
-        fig1 = px.line_polar(df_medias[key], r="Nota", theta="Indice", color="Legenda", title=key, line_close=True, markers=True, range_r=[0,10], start_angle=0, direction='counterclockwise')
-        fig.add_traces(list(fig1.select_traces()),1,key-2019)
+    fig = make_subplots(rows=1, cols=3, specs=[[{'type': 'polar'}]*3],
+                        subplot_titles=[2020, 2021, 2022],
+                        x_title="Evolução do Aluno por Ano")
 
-        labels_to_show_in_legend = ["Notas do Aluno", "Médias da Fase", "Médias da Turma"]
-        for trace in fig.data[3:]:
-            if (trace['name'] in labels_to_show_in_legend):
-                trace['showlegend'] = False
-                # print(trace)
-    # fig.update_layout(
-    #     showlegend=False
-    # )
-    # Plot!
+
+    show_legend = {"Notas do Aluno": True, "Médias da Fase": True, "Médias da Turma": True}
+
+    for index, key in enumerate(df_medias):
+        df_medias[key]['Legenda'] = df_medias[key]['Legenda'].replace(
+            {f"Notas do Aluno ({key})": "Notas do Aluno", 
+             f"Médias da Fase ({key})": "Médias da Fase", 
+             f"Médias da Turma ({key})": "Médias da Turma"}
+        )
+        
+        fig1 = px.line_polar(df_medias[key], r="Nota", theta="Indice", color="Legenda", 
+                             title=key, line_close=True, markers=True, range_r=[0, 10], 
+                             start_angle=0, direction='counterclockwise')
+        
+
+        for trace in fig1.data:
+            if not show_legend[trace.name]:
+                trace.showlegend = False
+            else:
+                show_legend[trace.name] = False
+
+        fig.add_traces(list(fig1.select_traces()), 1, key - 2019)
+
     st.plotly_chart(fig, use_container_width=True)
 
-def gera_grafico_comparativo_anos(df):
+
+
+def gera_grafico_comparativo_anos(df, id_aluno):
     df_yoy = gera_df_comparativo_anos(df)
 
-    fig = make_subplots(rows=1, cols=2, specs=[[{'type': 'scatter'}, {'type': 'polar'}]],
-                        subplot_titles=('INDE', 'Índices'), x_title="Evolução do Aluno por Ano")
-    fig1 = px.line(df, x="ANO_PESQUISA", y="INDE", markers=True, template="plotly_white")
-    fig2 = px.line_polar(df_yoy, r="Nota", theta="Indice", color="Legenda",
-                         line_close=True, markers=True, range_r=[0,10], start_angle=0, direction='counterclockwise')
+    # Cria duas colunas para os gráficos
+    col1, col2 = st.columns([1,1])
 
-    fig.add_traces(list(fig1.select_traces()),1,1)
-    fig.add_traces(list(fig2.select_traces()),1,2)
-    # Plot!
-    st.plotly_chart(fig, use_container_width=True)
+    # Gráfico de INDE
+    with col1:
+        exibir_grafico_inde(df, id_aluno)
+
+    # Gráfico de Índices
+    with col2:
+        fig = px.line_polar(df_yoy, r="Nota", theta="Indice", color="Legenda",
+                            line_close=True, markers=True, range_r=[0,10], start_angle=0, direction='counterclockwise')
+        st.plotly_chart(fig, use_container_width=True)
+
 
 ###################################################################################################################
 
@@ -184,6 +213,6 @@ if id_aluno:
             st.subheader("Pedras por Ano")
             exibe_pedras_por_ano(df_aluno)
             gera_grafico_medias(df_aluno)
-            gera_grafico_comparativo_anos(df_aluno)
+            gera_grafico_comparativo_anos(df_aluno, id_aluno_int)  # Passa id_aluno_int como argumento
     except ValueError:
         st.error("Por favor, insira um ID válido.")
