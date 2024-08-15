@@ -30,7 +30,7 @@ possíveis.
 """)
 
 # Path to your HTML file
-html_file_path = "dataset/DATAPREP.html"
+html_file_path = "static/DATAPREP.html"
 
 # Read the HTML file with a specified encoding
 try:
