@@ -17,13 +17,13 @@ As dependências estão listadas no arquivo `requirements.txt`. Certifique-se de
 1. Navegue até a pasta do projeto:
 
     ```bash
-    cd caminho/para/a/pasta/streamlit
+    cd caminho/para/a/pasta/
     ```
 
 2. Execute o aplicativo Streamlit:
 
     ```bash
-    streamlit run app.py
+    streamlit run 1_🏠_Sobre_o_Projeto.py
     ```
 
 ## Licença
