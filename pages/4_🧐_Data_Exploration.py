@@ -20,9 +20,6 @@ st.title("🧐 Data Exploration")
 st.markdown("---")
 
 
-power_bi_url = "https://app.powerbi.com/reportEmbed?reportId=9543c85b-5bd3-4a10-b0ac-ad2a6950e2cc&autoAuth=true&ctid=40a64d0b-f2f9-4a34-b1b3-0992ac0e5e4e"
-
-
 # Instruções sobre o propósito da página
 st.markdown("""
     **Bem-vindo à página de Exploração de Dados da Passos Mágicos!** 
@@ -35,7 +32,3 @@ st.markdown("""
 """)
 
 
-st.markdown(
-    f'<iframe width="100%" height="500" src="{power_bi_url}" frameborder="0" allowFullScreen="true"></iframe>',
-    unsafe_allow_html=True
-)
