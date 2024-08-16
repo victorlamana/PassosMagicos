@@ -62,7 +62,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     modification_container = st.container()
 
     with modification_container:
-        to_filter_columns = st.multiselect("Filtrar dataframe em", df.columns)
+        to_filter_columns = st.multiselect("Filtrar dataframe em", df.columns, placeholder="Selecione uma opção")
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
             left.write("↳")
@@ -79,7 +79,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
             elif isinstance(df[column].dtype, pd.api.types.CategoricalDtype) or df[column].nunique() < 10:
                 user_cat_input = right.multiselect(
                     f"Valores para {column}",
-                    df[column].unique(),
+                    df[column].unique(), placeholder="Selecione uma opção"
                 )
                 if user_cat_input:
                     df = df[df[column].isin(user_cat_input)]

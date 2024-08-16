@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import PIL.Image as Image
 
 st.set_page_config(
@@ -36,13 +37,7 @@ st.markdown("""
     Esperamos que esta plataforma ajude a acompanhar o impacto do nosso trabalho e a tomar decisões baseadas em dados para promover o sucesso contínuo da Passos Mágicos.
 """)
 
-# Exibindo imagem PBI_PLANB
-pbi_image = Image.open("./img/PBI_PLANB.png")
-st.image(pbi_image, caption="Relatório Power BI - Passos Mágicos")
-
-# Texto com hyperlink
-st.markdown("""
-    Para visualizar o arquivo original do relatório no Power BI, clique no link abaixo:
-    
-    [PBI - Passos Mágicos (.pbix)](https://github.com/victorlamana/PassosMagicos/blob/main/dataset/PBI%20-%20Passos%20M%C3%A1gicos.pbix)
-""")
+# Incorporar o Dashboard do Power BI
+# Substitua 'your_power_bi_report_url' pela URL do seu relatório do Power BI
+power_bi_report_url = "https://app.powerbi.com/view?r=eyJrIjoiNDA4NWQ1ODUtMzY0MC00YTBjLWFiZDAtYWM2ODkwMGJlYzRjIiwidCI6IjExZGJiZmUyLTg5YjgtNDU0OS1iZTEwLWNlYzM2NGU1OTU1MSIsImMiOjR9"
+components.iframe(power_bi_report_url, height=640, scrolling=True)
