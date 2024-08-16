@@ -31,7 +31,7 @@ st.markdown(
     """
         ### Assista ao Nosso Vídeo no YouTube
     
-        Confira este vídeo incrível que explica mais sobre o projeto 'Passos Mágicos'
+        Confira este vídeo incrível que explica mais sobre o projeto 'Visão Aluno 360°'
     """
 )
 youtube_url = "https://youtu.be/x0I4SaWe1xg"
