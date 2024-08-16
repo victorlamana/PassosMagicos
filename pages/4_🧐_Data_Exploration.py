@@ -7,18 +7,23 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     page_icon="👥"
 )
+
+# Importando estilos CSS
 with open("./css/style.css") as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-image =  Image.open("./img/passos-magicos.png")
+
+# Exibindo imagem principal
+image = Image.open("./img/passos-magicos.png")
 st.image(image)
 
-logo =  Image.open("./img/postech-logo-white.png")
-logo2 =  Image.open("./img/postech-logo-white2.png")
-st.logo(logo2, link=None, icon_image=logo )
+# Exibindo logos
+logo = Image.open("./img/postech-logo-white.png")
+logo2 = Image.open("./img/postech-logo-white2.png")
+st.logo(logo2, link=None, icon_image=logo)
 
+# Título da página
 st.title("🧐 Data Exploration")
 st.markdown("---")
-
 
 # Instruções sobre o propósito da página
 st.markdown("""
@@ -31,4 +36,13 @@ st.markdown("""
     Esperamos que esta plataforma ajude a acompanhar o impacto do nosso trabalho e a tomar decisões baseadas em dados para promover o sucesso contínuo da Passos Mágicos.
 """)
 
+# Exibindo imagem PBI_PLANB
+pbi_image = Image.open("./img/PBI_PLANB.png")
+st.image(pbi_image, caption="Relatório Power BI - Passos Mágicos")
 
+# Texto com hyperlink
+st.markdown("""
+    Para visualizar o arquivo original do relatório no Power BI, clique no link abaixo:
+    
+    [PBI - Passos Mágicos (.pbix)](https://github.com/victorlamana/PassosMagicos/blob/main/dataset/PBI%20-%20Passos%20M%C3%A1gicos.pbix)
+""")
