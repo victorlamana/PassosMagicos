@@ -27,6 +27,17 @@ Com base nos conceitos de reconhecimento individual, valorização singular e an
 história única de cada aluno por meio de gráficos que destacam seus principais indicadores de desenvolvimento educacional.
 """)
 
+st.markdown(
+    """
+        ### Assista ao Nosso Vídeo no YouTube
+    
+        Confira este vídeo incrível que explica mais sobre o projeto 'Passos Mágicos'
+    """
+)
+youtube_url = "https://youtu.be/x0I4SaWe1xg"
+
+st.video(youtube_url)
+
 st.subheader("Metodologia")
 
 st.write("""
