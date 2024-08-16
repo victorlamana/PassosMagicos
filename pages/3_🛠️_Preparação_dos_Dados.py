@@ -31,6 +31,7 @@ possíveis.
 
 # Path to your HTML file
 html_file_path = "dataset/DATAPREP.html"
+sql_file_path = "dataset/script.sql"
 
 # Read the HTML file with a specified encoding
 try:
@@ -47,3 +48,19 @@ data_uri = f"data:text/html;base64,{encoded_html}"
 st.markdown(f"""
     <iframe src="{data_uri}" style="width:100%; height:1200px; border:none;"></iframe>
 """, unsafe_allow_html=True)
+
+
+
+
+
+try:
+    with open(sql_file_path, 'r', encoding='utf-8') as sql_file:
+        sql_query = sql_file.read()
+except FileNotFoundError:
+    st.error(f"O arquivo {sql_file_path} não foi encontrado.")
+except Exception as e:
+    st.error(f"Ocorreu um erro ao ler o arquivo: {e}")
+else:
+    # Exibir o conteúdo do arquivo .sql em uma seção de código formatada
+    st.subheader("Script de transformação aplicado no PBI:")
+    st.code(sql_query, language='sql')
